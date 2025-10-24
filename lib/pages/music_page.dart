@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import '../widgets/audio_player_widget.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class MusicPage extends StatelessWidget {
+  const MusicPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final tracks = [
-      {'title': 'Ритм 1', 'url': 'https://godjira.github.io/guitar/audio/Аудіо_001.mp3'},
-      {'title': 'Ритм 2', 'url': 'hhttps://godjira.github.io/guitar/audio/Аудіо_001.mp3'},
+      {'title': 'Ритм 1', 'assetPath': 'audio/Аудіо_001.mp3'},
+      {'title': 'Ритм 2', 'assetPath': 'audio/Аудіо_001.mp3'},
     ];
 
     return Scaffold(
@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
         child: ListView(
           shrinkWrap: true,
           children: tracks
-              .map((t) => AudioPlayerWidget(title: t['title']!, url: t['url']!))
+              .map((t) => AudioPlayerWidget(title: t['title']!, assetPath: t['assetPath']!))
               .toList(),
         ),
       ),

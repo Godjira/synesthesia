@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
 class AudioPlayerWidget extends StatefulWidget {
-  final String url;
+  final String assetPath;
   final String title;
 
   const AudioPlayerWidget({
     super.key,
-    required this.url,
+    required this.assetPath,
     required this.title,
   });
 
@@ -15,10 +15,12 @@ class AudioPlayerWidget extends StatefulWidget {
   State<AudioPlayerWidget> createState() => _AudioPlayerWidgetState();
 }
 
-class _AudioPlayerWidgetState extends State<AudioPlayerWidget>  with AutomaticKeepAliveClientMixin {
+class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
+    with AutomaticKeepAliveClientMixin {
   late final AudioPlayer _player;
   bool _isLooping = false;
   double _volume = 1.0;
+  double _speed = 1.0;
   Duration _position = Duration.zero;
   Duration _duration = Duration.zero;
 
@@ -26,14 +28,15 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget>  with AutomaticKe
   void initState() {
     super.initState();
     _player = AudioPlayer();
-    _player.setUrl(widget.url);
+    _player.setAsset(widget.assetPath);
     _player.playerStateStream.listen((_) => setState(() {}));
     _player.positionStream.listen((pos) => setState(() => _position = pos));
-    _player.durationStream.listen((dur) => setState(() => _duration = dur ?? Duration.zero));
+    _player.durationStream
+        .listen((dur) => setState(() => _duration = dur ?? Duration.zero));
   }
 
   @override
-    bool get wantKeepAlive => true;
+  bool get wantKeepAlive => true;
 
   @override
   void dispose() {
@@ -71,18 +74,25 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget>  with AutomaticKe
             Text(widget.title, style: const TextStyle(fontSize: 18)),
             Slider(
               value: progress.clamp(0.0, 1.0),
-              onChanged: (v) => _player.seek(Duration(milliseconds: (_duration.inMilliseconds * v).toInt())),
+              onChanged: (v) => _player.seek(
+                Duration(milliseconds: (_duration.inMilliseconds * v).toInt()),
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  icon: Icon(_isLooping ? Icons.repeat_one : Icons.repeat, color: _isLooping ? Colors.amber : Colors.white),
+                  icon: Icon(
+                    _isLooping ? Icons.repeat_one : Icons.repeat,
+                    color: _isLooping ? Colors.amber : Colors.white,
+                  ),
                   onPressed: _toggleLoop,
                 ),
                 IconButton(
-                  icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
-                  onPressed: () => isPlaying ? _player.pause() : _player.play(),
+                  icon:
+                      Icon(isPlaying ? Icons.pause : Icons.play_arrow, size: 32),
+                  onPressed: () =>
+                      isPlaying ? _player.pause() : _player.play(),
                 ),
                 IconButton(
                   icon: const Icon(Icons.restart_alt),
@@ -90,14 +100,53 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget>  with AutomaticKe
                 ),
               ],
             ),
-            Slider(
-              value: _volume,
-              onChanged: (v) {
-                setState(() => _volume = v);
-                _player.setVolume(v);
-              },
-              min: 0,
-              max: 1,
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Повзунок швидкості
+                Expanded(
+                  child: Row(
+                    children: [
+                      const Icon(Icons.pets, color: Colors.grey), // черепаха :)
+                      Expanded(
+                        child: Slider(
+                          value: _speed,
+                          min: 0.5,
+                          max: 1.5,
+                          divisions: 10,
+                          onChanged: (v) {
+                            setState(() => _speed = v);
+                            _player.setSpeed(v);
+                          },
+                        ),
+                      ),
+                      const Icon(Icons.flash_on, color: Colors.grey), // заєць :)
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 16),
+                // Повзунок гучності
+                Expanded(
+                  child: Row(
+                    children: [
+                      const Icon(Icons.volume_down, color: Colors.grey),
+                      Expanded(
+                        child: Slider(
+                          value: _volume,
+                          min: 0,
+                          max: 1,
+                          onChanged: (v) {
+                            setState(() => _volume = v);
+                            _player.setVolume(v);
+                          },
+                        ),
+                      ),
+                      const Icon(Icons.volume_up, color: Colors.grey),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),

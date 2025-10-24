@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/home_page.dart';
+import 'pages/music_page.dart';
 import 'pages/theory_page.dart';
 
 void main() {
@@ -30,12 +30,18 @@ class MainTabs extends StatefulWidget {
 
 class _MainTabsState extends State<MainTabs> {
   int _index = 0;
-  final _pages = const [HomePage(), TheoryPage()];
+  final _pages = const [MusicPage(), TheoryPage()];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_index],
+      body: IndexedStack(
+        index: _index,
+        children: [
+          MusicPage(),
+          TheoryPage(),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _index,
         onTap: (i) => setState(() => _index = i),
