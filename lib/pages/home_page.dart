@@ -7,8 +7,8 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tracks = [
-      {'title': 'Ритм 1', 'url': 'https://example.com/audio1.mp3'},
-      {'title': 'Ритм 2', 'url': 'https://example.com/audio2.mp3'},
+      {'title': 'Ритм 1', 'url': 'https://godjira.github.io/guitar/audio/Аудіо_001.mp3'},
+      {'title': 'Ритм 2', 'url': 'hhttps://godjira.github.io/guitar/audio/Аудіо_001.mp3'},
     ];
 
     return Scaffold(
